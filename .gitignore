@@ -7,3 +7,5 @@ dist/
 tools/
 .npm-cache/
 sites-backend/
+
+images/gallery-backups/
