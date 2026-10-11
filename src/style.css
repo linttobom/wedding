@@ -52,3 +52,10 @@
 @keyframes pencil-fill{to{stroke-dashoffset:0}}
 @keyframes pencil-number{0%,40%{color:#121212}65%,100%{color:#fff}}
 @media(prefers-reduced-motion:reduce){.is-coloring .pencil-stroke{animation:none;stroke-dashoffset:0}.wedding-day:has(.is-coloring){animation:none;color:#fff}}
+
+/* Keep controls aligned with the invitation while the page scrolls. */
+.fixed-controls{position:fixed;top:0;left:50%;transform:translateX(-50%);width:min(100%,440px);height:calc(64px + env(safe-area-inset-top,0px));z-index:10;pointer-events:none;--u:calc(min(100vw,440px) / 360)}
+.fixed-controls button{pointer-events:auto}
+.fixed-controls .music-toggle{top:calc(16px + env(safe-area-inset-top,0px))}
+.fixed-controls .menu-toggle{top:calc(16 * var(--u) + env(safe-area-inset-top,0px))}
+.fixed-controls[inert]{visibility:hidden}
