@@ -13,7 +13,7 @@
 @media(min-width:600px){.invitation{box-shadow:0 0 35px #0000000c}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 
 .invitation{overflow-x:clip}.directions p{white-space:nowrap}.directions article:first-of-type p,.directions article:last-of-type p{line-height:calc(14.4 * var(--u))}.direction-line{margin-top:-1px}.gallery-section{min-height:calc(732 * var(--u))}.account-group+.account-group{margin-top:calc(24 * var(--u))}.lightbox-photo{transform:translateY(3px)}
-.location-section{padding-bottom:calc(32 * var(--u))}
+.location-section{min-height:0;padding-bottom:50px}
 
 /* Updated Figma: viewport-sized opening, original assets and typography. */
 .hero{height:100vh;height:100svh;background:#ecedf1;min-height:0}.hero-photo{height:80%}.hero-photo img{left:-13.889%;top:-11.65%;width:121.944%;height:111.15%;object-fit:cover;object-position:center}.hero-fade{top:68%;height:14.324%;background:linear-gradient(180deg,rgba(236,237,241,0),#ecedf1 80.189%)}.hero-names{top:77.3%}.hero-title{top:80.95%}.hero-details{top:88.24%}
@@ -31,3 +31,24 @@
 
 @font-face{font-family:NanumPen;src:url("../public/fonts/NanumPenScript-Regular.ttf") format("truetype");font-weight:400;font-style:normal;font-display:swap}
 .intro-writing{font-family:NanumPen,Pretendard,sans-serif;color:#c0def2;letter-spacing:.02em;text-shadow:0 1px 10px #6ba0bd33}.intro-writing p.intro-message{font-size:clamp(32px,8cqw,40px);font-weight:400;line-height:1.5;margin:0;white-space:nowrap;animation:ink 1.8s .2s both}
+
+/* Updated location design: 104 × 36 buttons at the 360px design width. */
+.map-buttons a{height:calc(36 * var(--u));font-size:13px}
+.map{position:relative}
+.map img{position:absolute;max-width:none;width:calc(1280 * var(--u) / 2);height:calc(720 * var(--u) / 2);left:calc(-476 * var(--u) / 2);top:calc(-140 * var(--u) / 2);object-fit:fill}
+.map-credit{position:absolute;right:calc(6 * var(--u));bottom:calc(4 * var(--u));padding:2px 4px;background:#ffffffd9;border-radius:2px;font-size:10px;color:#444}
+
+/* Gentle, one-time entrance for the text before the calendar. */
+.rise-reveal{opacity:0;translate:0 20px;transition:opacity 900ms ease,translate 900ms cubic-bezier(.22,1,.36,1);transition-delay:var(--reveal-delay,0ms)}
+.rise-reveal.rise-visible{opacity:1;translate:0 0}
+@media(prefers-reduced-motion:reduce){.rise-reveal{opacity:1;translate:none;transition:none}}
+
+/* Pencil strokes fill the original calendar heart once it enters the viewport. */
+.wedding-day{color:#121212}
+.wedding-day .pencil-heart{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:calc(33.5 * var(--u));height:calc(32.5 * var(--u));z-index:-1;overflow:visible}
+.pencil-stroke{stroke-dasharray:1;stroke-dashoffset:1}
+.is-coloring .pencil-stroke{animation:pencil-fill 2.1s linear forwards}
+.wedding-day:has(.is-coloring){animation:pencil-number 2.1s linear forwards}
+@keyframes pencil-fill{to{stroke-dashoffset:0}}
+@keyframes pencil-number{0%,40%{color:#121212}65%,100%{color:#fff}}
+@media(prefers-reduced-motion:reduce){.is-coloring .pencil-stroke{animation:none;stroke-dashoffset:0}.wedding-day:has(.is-coloring){animation:none;color:#fff}}
