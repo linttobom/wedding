@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host 127.0.0.1"
+    "preview": "vite preview --host 127.0.0.1",
+    "images:optimize": "node scripts/optimize-images.mjs",
+    "predev": "npm run images:optimize && npm run fonts:optimize",
+    "prebuild": "npm run images:optimize && npm run fonts:optimize",
+    "fonts:optimize": "node scripts/optimize-fonts.mjs"
   },
   "dependencies": {
     "react": "19.2.6",
@@ -17,6 +21,9 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "^6.1.2",
+    "fontkit": "^2.0.4",
+    "sharp": "^0.35.5",
+    "subset-font": "^2.9.0",
     "typescript": "5.9.3",
     "vite": "^8.3.4"
   }
