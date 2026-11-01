@@ -10,7 +10,9 @@
     "images:optimize": "node scripts/optimize-images.mjs",
     "predev": "npm run images:optimize && npm run fonts:optimize",
     "prebuild": "npm run images:optimize && npm run fonts:optimize",
-    "fonts:optimize": "node scripts/optimize-fonts.mjs"
+    "fonts:optimize": "node scripts/optimize-fonts.mjs",
+    "test:maps": "node --experimental-strip-types --test scripts/maps.test.mjs",
+    "security:check": "npm audit --audit-level=low && node scripts/check-security.mjs"
   },
   "dependencies": {
     "react": "19.2.6",

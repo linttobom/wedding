@@ -21,12 +21,15 @@ export function loadKakao():Promise<KakaoSdk>{
   };
   if(window.Kakao){ready();return}
   const script=document.createElement("script");
+  const finish=()=>{clearTimeout(timeout);script.onload=null;script.onerror=null};
+  const fail=()=>{finish();script.remove();reject(new Error("Kakao SDK failed to load"))};
+  const timeout=setTimeout(fail,12000);
   script.src="https://t1.kakaocdn.net/kakao_js_sdk/2.8.4/kakao.min.js";
   script.integrity="sha384-BGX7Wb16GmRFagri4bLJV2DgipVZaU2AI812GZtHtHzzDQJnfHasDXN5houxv45w";
   script.crossOrigin="anonymous";
   script.async=true;
-  script.onload=ready;
-  script.onerror=()=>{script.remove();reject(new Error("Kakao SDK failed to load"))};
+  script.onload=()=>{finish();ready()};
+  script.onerror=fail;
   document.head.appendChild(script);
  }).catch(error=>{loading=undefined;throw error});
  return loading;

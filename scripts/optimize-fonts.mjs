@@ -25,6 +25,10 @@ async function generate(font, codes, family, name, weight) {
   const buffer = await subsetFont(font, String.fromCodePoint(...codes), {
     targetFormat: 'woff2', preserveNameIds: [0, 13, 14],
   });
+  const included = new Set(fontkit.create(buffer).characterSet);
+  if (codes.some(code => !included.has(code))) {
+    throw new Error(`Font subset ${name} is missing required characters.`);
+  }
   await writeFile(`${output}/fonts/${name}.woff2`, buffer);
   rules.push(`@font-face{font-family:${family};src:url('./fonts/${name}.woff2') format('woff2');font-weight:${weight};font-style:normal;font-display:swap;unicode-range:${unicodeRange(codes)}}`);
   return buffer.length;
@@ -33,11 +37,9 @@ async function generate(font, codes, family, name, weight) {
 const pretendard = await readFile('public/fonts/PretendardVariable.woff2');
 const supported = fontkit.create(pretendard).characterSet.sort((a, b) => a - b);
 const primary = supported.filter(code => primaryCharacters.has(code));
-const extra = supported.filter(code => !primaryCharacters.has(code));
 const primarySize = await generate(pretendard, primary, 'Pretendard', 'pretendard-primary', '45 920');
-for (let i = 0; i < extra.length; i += 512) {
-  await generate(pretendard, extra.slice(i, i + 512), 'Pretendard', `pretendard-extra-${i / 512}`, '45 920');
-}
+// Every visible string is defined in src and the subset is rebuilt before dev/build.
+// Keep the full font in public/fonts as the source, without shipping unused glyphs.
 
 const experience = await readFile('src/Experience.tsx', 'utf8');
 const introText = [...experience.matchAll(/className="intro-message">([^<]+)</g)].map(match => match[1]).join('');
@@ -46,4 +48,4 @@ const introCharacters = new Set([...introText].map(char => char.codePointAt(0)))
 const intro = fontkit.create(nanum).characterSet.filter(code => introCharacters.has(code)).sort((a, b) => a - b);
 const introSize = await generate(nanum, intro, 'NanumPen', 'nanum-intro', '400');
 await writeFile(`${output}/fonts.css`, rules.join('\n') + '\n');
-console.log(`Initial font subsets: Pretendard ${primarySize} bytes, NanumPen ${introSize} bytes; ${Math.ceil(extra.length / 512)} extra subsets available on demand.`);
+console.log(`Font subsets: Pretendard ${primarySize} bytes, NanumPen ${introSize} bytes. Original fonts are preserved locally.`);

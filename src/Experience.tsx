@@ -1,6 +1,6 @@
 import {useEffect,useRef,useState} from 'react';
 import type {CSSProperties} from 'react';
-const musicFiles=import.meta.glob('../audio/*.{mp3,m4a,ogg,wav,MP3,M4A,OGG,WAV}',{eager:true,query:'?url',import:'default'}) as Record<string,string>;
+const musicFiles=import.meta.glob(['../audio/*.{mp3,m4a,ogg,wav,MP3,M4A,OGG,WAV}','!../audio/placeholder.wav'],{eager:true,query:'?url',import:'default'}) as Record<string,string>;
 const musicUrl=Object.entries(musicFiles).sort(([a],[b])=>a.localeCompare(b)).find(([file])=>!file.endsWith('placeholder.wav'))?.[1];
 export function Intro(){
  const [finished,setFinished]=useState(false);
