@@ -23,7 +23,15 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Build
+        env:
+          VITE_KAKAO_JAVASCRIPT_KEY: ${{ vars.VITE_KAKAO_JAVASCRIPT_KEY }}
+        run: |
+          if [ -z "$VITE_KAKAO_JAVASCRIPT_KEY" ]; then
+            echo "::error::Set the VITE_KAKAO_JAVASCRIPT_KEY repository variable before deploying."
+            exit 1
+          fi
+          npm run build
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
