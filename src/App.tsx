@@ -10,8 +10,10 @@ import mapImage from '../images/map-kakao.png';
 import attendanceImage from '../images/optimized/attendance.webp';
 import {PencilHeart} from './PencilHeart';
 import {Intro,Music} from './Experience';
+import {WeddingVideo} from './WeddingVideo';
 import {loadKakao,type KakaoSdk} from './kakao';
 import {getTmapHref,prepareTmapOpen} from './maps';
+import {accountGroups} from './accounts';
 const invitation={title:"성진 · 서린의 결혼식에 초대합니다",text:"2027년 1월 30일 오후 3시 30분 · 노블발렌티 대치점",url:"https://linttobom.github.io/wedding/"};
 const nav=[["처음으로","home"],["인사말","greeting"],["예식 일시","date"],["오시는 길","location"],["갤러리","gallery"],["마음 전하는 곳","accounts"],["공유하기","share"]];
 function Names(){return <div className="names">신랑 <strong>이성진</strong><span>·</span>신부 <strong>주서린</strong></div>}
@@ -53,10 +55,10 @@ export default function Wedding(){
  <article><h3>🚌 <span>버스</span></h3><p>휘문고, 대치2동주민센터 정류장 하차 후 학여울역 방향 100M 직진<br/>간선 : 343, 401<br/>지선 : 4319<br/>일반 : 11-3, 917<br/>직행 : 500-2, 9407, 9507, 9607</p></article><Icon name="imgLine1" className="direction-line"/>
  <article><h3>🚗 <span>자가용</span></h3><p><b>경부고속도로</b><br/>양재IC 양재 방면으로 오른쪽 방향 &gt; 개포3, 4단지 삼거리<br/>(대치역 방면 좌회전) &gt; 은마 아파트 &gt; 대치우성 아파트 좌회전<br/>&gt; 노블발렌티 대치점</p><p><b>서울 서부, 강북지역</b><br/>영동대교 남단 &apos;경기고교사거리&apos; 방면 &gt; 봉은사역 &gt; 삼성역 직진<br/>&gt; 노블발렌티 대치점</p><p><b>서울 동남부 지역</b><br/>2호선 삼성역(무역센터) 교차로 &gt; 학여울역(SETEC) 방향 우회전<br/>&gt; 노블발렌티 대치점</p></article><Icon name="imgLine1" className="direction-line"/>
  <article><h3>🅿️ <span>주차</span></h3><p>지하 주차장 : 하객 2시간 무료</p><p>공용주차장</p></article></div></section>
- <section id="video" className="video-section" aria-label="성진과 서린의 웨딩 영상"><iframe title="성진과 서린의 웨딩 영상" src="https://www.youtube-nocookie.com/embed/frXorvk8V_g?autoplay=0&playsinline=1&controls=1&rel=0" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen referrerPolicy="strict-origin-when-cross-origin"/></section>
+ <section id="video" className="video-section" aria-label="성진과 서린의 웨딩 영상"><WeddingVideo/></section>
  <section id="gallery" className="gallery-section"><h2>갤러리</h2><p className="subtitle">사진을 클릭 하면 크게 보실 수 있어요</p><div className="gallery-grid">{photos.map((id,i)=><button key={id.full} aria-label={`${i+1}번째 웨딩 사진 크게 보기`} onClick={()=>setPhoto(i)}><img src={id.thumbnail} alt={`성진과 서린의 웨딩 사진 ${i+1}`} width="480" height="480" loading="lazy" decoding="async" fetchPriority="low"/></button>)}</div></section>
 
- <section id="accounts" className="accounts-section"><h2>마음 전하실 곳</h2><p className="subtitle">참석이 어려우신 분들을 위해 기재했습니다<br/>너그러운 마음으로 양해 부탁드립니다</p><div className="account-groups">{["신랑측","신부측"].map((label,side)=><details className="account-group" key={label}><summary><span>{label}</span><span className="account-arrow"><Icon name="account-chevron" className="account-arrow-closed"/><Icon name="account-chevron-open" className="account-arrow-open"/></span></summary><div className="account-list">{[0,1].map(n=><div className="account" key={n}><div><p className="account-name">{side===0?"신랑 이성진":"신부 주서린"}</p><p className="account-number">카카오뱅크 <span>123-456-789012</span></p></div><button aria-label={`${label} ${n+1}번째 계좌번호 복사`} onClick={()=>copy("123-456-789012","계좌번호를")}><Icon name="account-copy"/></button></div>)}</div></details>)}</div></section>
+ <section id="accounts" className="accounts-section"><h2>마음 전하실 곳</h2><p className="subtitle">참석이 어려우신 분들을 위해 기재했습니다<br/>너그러운 마음으로 양해 부탁드립니다</p><div className="account-groups">{accountGroups.map(({label,accounts})=><details className="account-group" key={label}><summary><span>{label}</span><span className="account-arrow"><Icon name="account-chevron" className="account-arrow-closed"/><Icon name="account-chevron-open" className="account-arrow-open"/></span></summary><div className="account-list">{accounts.map(account=><div className="account" key={account.role}><div><p className="account-name">{account.role} {account.name}</p><p className="account-number">{account.bank}<span>{account.number||"계좌번호 준비 중"}</span></p></div><button disabled={!account.number} aria-label={`${label} ${account.role} ${account.name} 계좌번호 복사`} onClick={()=>copy(account.number,"계좌번호를")}><Icon name="account-copy"/></button></div>)}</div></details>)}</div></section>
  <section id="attendance" className="attendance-section"><img className="attendance-photo" src={attendanceImage} alt="거울 앞에서 포즈를 취하는 성진과 서린" width="1500" height="2250" loading="lazy"/></section>
  <section id="share" className="share-section"><button className="share-trigger" onClick={openShare} aria-haspopup="dialog"><ShareIcon name="trigger"/><span>공유하기</span></button></section>
  <footer><Icon name="img" className="footer-heart"/><Names/><p>Thank you for celebrating with us</p></footer></main>

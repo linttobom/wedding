@@ -1,5 +1,7 @@
 import {useEffect,useRef,useState} from 'react';
 import type {CSSProperties} from 'react';
+import {createBackgroundMusic,STOP_BACKGROUND_MUSIC} from './backgroundMusic';
+import {createMusicVolume} from './musicVolume';
 const musicFiles=import.meta.glob(['../audio/*.{mp3,m4a,ogg,wav,MP3,M4A,OGG,WAV}','!../audio/placeholder.wav'],{eager:true,query:'?url',import:'default'}) as Record<string,string>;
 const musicUrl=Object.entries(musicFiles).sort(([a],[b])=>a.localeCompare(b)).find(([file])=>!file.endsWith('placeholder.wav'))?.[1];
 export function Intro(){
@@ -9,7 +11,17 @@ export function Intro(){
 }
 export function Music(){
  const audio=useRef<HTMLAudioElement>(null);const [playing,setPlaying]=useState(false),[error,setError]=useState(false);
- useEffect(()=>{if(!musicUrl)return;const start=()=>{audio.current?.play().then(()=>setPlaying(true)).catch(()=>{});document.removeEventListener('pointerdown',start)};document.addEventListener('pointerdown',start,{once:true});return()=>document.removeEventListener('pointerdown',start)},[]);
- async function toggle(){if(!musicUrl)return;if(playing){audio.current?.pause();setPlaying(false)}else{try{await audio.current?.play();setPlaying(true);setError(false)}catch{setError(true)}}}
- return <><audio ref={audio} src={musicUrl} loop preload="none" onError={()=>setError(true)}/><button className="music-toggle" onClick={e=>{e.stopPropagation();void toggle()}} disabled={!musicUrl} aria-label={!musicUrl?'음악 파일을 넣으면 재생할 수 있습니다':playing?'배경 음악 끄기':'배경 음악 켜기'} aria-pressed={playing} title={!musicUrl?'audio 폴더에 노래를 넣어주세요':error?'음악 파일을 확인해주세요':playing?'음악 끄기':'음악 켜기'}><span aria-hidden="true">♪</span><small>{playing?'ON':'OFF'}</small></button></>;
+ const playback=useRef<ReturnType<typeof createBackgroundMusic>|null>(null);
+ useEffect(()=>{
+  if(!musicUrl||!audio.current)return;
+  const volume=createMusicVolume(audio.current);
+  const music=createBackgroundMusic(audio.current,state=>{setPlaying(state.playing);setError(state.error)},volume.prepare);
+  playback.current=music;
+  const start=()=>{void music.startAutomatically()};
+  const stop=()=>{document.removeEventListener('pointerdown',start);music.stopForVideo()};
+  document.addEventListener('pointerdown',start,{once:true});
+  window.addEventListener(STOP_BACKGROUND_MUSIC,stop);
+  return()=>{document.removeEventListener('pointerdown',start);window.removeEventListener(STOP_BACKGROUND_MUSIC,stop);music.dispose();volume.dispose();playback.current=null};
+ },[]);
+ return <><audio ref={audio} src={musicUrl} loop preload="none" onError={()=>setError(true)}/><button className="music-toggle" onPointerDown={e=>e.stopPropagation()} onClick={e=>{e.stopPropagation();void playback.current?.toggle()}} disabled={!musicUrl} aria-label={!musicUrl?'음악 파일을 넣으면 재생할 수 있습니다':playing?'배경 음악 끄기':'배경 음악 켜기'} aria-pressed={playing} title={!musicUrl?'audio 폴더에 노래를 넣어주세요':error?'음악 파일을 확인해주세요':playing?'음악 끄기':'음악 켜기'}><span aria-hidden="true">♪</span><small>{playing?'ON':'OFF'}</small></button></>;
 }

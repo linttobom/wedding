@@ -21,6 +21,8 @@ jobs:
           cache: npm
       - run: npm ci --ignore-scripts
       - run: npm run test:maps
+      - run: npm run test:media
+      - run: npm run test:security
       - name: Build
         env:
           VITE_KAKAO_JAVASCRIPT_KEY: ${{ vars.VITE_KAKAO_JAVASCRIPT_KEY }}

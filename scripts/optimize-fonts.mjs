@@ -6,7 +6,7 @@ const output = 'src/generated';
 await rm(`${output}/fonts`, {recursive: true, force: true});
 await mkdir(`${output}/fonts`, {recursive: true});
 const files = (await readdir('src', {recursive: true}))
-  .filter(file => !file.startsWith('generated/') && /\.(tsx?|css)$/.test(file));
+  .filter(file => !file.startsWith('generated/') && (/\.(tsx?|css)$/.test(file) || file === 'accounts.public.json'));
 const source = (await Promise.all(files.map(file => readFile(`src/${file}`, 'utf8')))).join('\n');
 const primaryCharacters = new Set([...source, ...Array.from({length: 95}, (_, i) => String.fromCodePoint(i + 32))].map(char => char.codePointAt(0)));
 const rules = [];
