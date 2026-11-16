@@ -13,17 +13,19 @@
 .location-section{background:#f8f8f8;min-height:calc(1096 * var(--u));padding:calc(50 * var(--u)) 0}.location-section h2{text-align:center;font-size:calc(18 * var(--u));line-height:calc(21 * var(--u))}.venue{text-align:center;font-size:calc(14 * var(--u));font-weight:500;line-height:calc(17 * var(--u));margin-top:calc(28 * var(--u))}.venue span{color:#69a0cb}.address{display:flex;justify-content:center;align-items:center;gap:calc(10 * var(--u));font-size:calc(13 * var(--u));color:#767676;line-height:calc(16 * var(--u));margin-top:calc(6 * var(--u))}.address button{position:relative}.address button:after{content:'';position:absolute;inset:-10px}.address img{width:12.5px;height:12.5px}.map{display:block;overflow:hidden;margin-top:calc(30 * var(--u));height:calc(220 * var(--u))}.map img{width:100%;height:calc(223 * var(--u));object-fit:cover}.map-buttons{display:flex;gap:calc(8 * var(--u));margin:calc(16 * var(--u)) calc(16 * var(--u)) 0}.map-buttons a{flex:1;background:white;border:1px solid #e5e5e5;border-radius:4px;height:calc(40 * var(--u));display:flex;align-items:center;justify-content:center;font-size:calc(14 * var(--u))}.directions{margin:calc(30 * var(--u)) calc(16 * var(--u)) 0;display:flex;flex-direction:column;gap:calc(20 * var(--u))}.directions h3{font-size:calc(14 * var(--u));line-height:calc(17 * var(--u));margin-bottom:calc(8 * var(--u));display:flex;gap:calc(6 * var(--u))}.directions p{font-size:calc(12 * var(--u));line-height:calc(18 * var(--u));letter-spacing:-.01em;overflow-wrap:break-word}.directions p+p{margin-top:calc(4 * var(--u))}.directions article:nth-of-type(3) p+p{margin-top:calc(8 * var(--u))}.directions b{font-weight:500}.subway{color:#1ea43b}.direction-line{width:328px;height:1px;max-width:100%}
 .gallery-section{padding:calc(50 * var(--u)) 0;text-align:center}.gallery-section h2,.accounts-section h2,.share-section h2{font-size:calc(18 * var(--u));line-height:calc(21 * var(--u))}.subtitle{font-size:calc(13 * var(--u));line-height:calc(20 * var(--u));color:#666;margin-top:calc(6 * var(--u));text-align:center}.gallery-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:calc(4 * var(--u));margin-top:calc(30 * var(--u))}.gallery-grid button{overflow:hidden;aspect-ratio:1;background:#eee}.gallery-grid img{width:100%;height:100%;object-fit:cover}.gallery-grid img.zoomed{transform:scale(25.4);transform-origin:50% 50%}
 /* Figma 100:129 / 130:135 / 145:616 — independent account accordions. */
-.accounts-section{padding:calc(50 * var(--u)) calc(16 * var(--u));background:#f8f8f8;text-align:center}
-.accounts-section:has(.account-group[open]){padding-bottom:calc(42 * var(--u))}
-.accounts-section:has(.account-group[open] ~ .account-group[open]){padding-bottom:calc(30 * var(--u))}
-.account-groups{margin-top:calc(48 * var(--u))}.accounts-section:has(details[open]) .account-groups{margin-top:calc(30 * var(--u))}
+.accounts-section{padding:calc(50 * var(--u)) calc(16 * var(--u));background:#f8f8f8;text-align:center;transition:padding-bottom 420ms cubic-bezier(.22,1,.36,1)}
+.accounts-section:has(.account-group[open]:not([data-closing])){padding-bottom:calc(42 * var(--u))}
+.accounts-section:has(.account-group[open]:not([data-closing]) ~ .account-group[open]:not([data-closing])){padding-bottom:calc(30 * var(--u))}
+.account-groups{margin-top:calc(48 * var(--u));transition:margin-top 420ms cubic-bezier(.22,1,.36,1)}.accounts-section:has(details[open]:not([data-closing])) .account-groups{margin-top:calc(30 * var(--u))}
 .account-group{position:relative;background-image:url('/icons/account-divider.svg');background-repeat:no-repeat;background-position:bottom;background-size:100% 1px}
 .account-group summary{height:calc(50 * var(--u));padding:0 calc(18 * var(--u));display:flex;align-items:center;justify-content:space-between;cursor:pointer;list-style:none;font-size:calc(14 * var(--u));line-height:calc(20 * var(--u));font-weight:500;text-align:left}
 .account-group summary::-webkit-details-marker{display:none}.account-group summary:focus-visible{outline:2px solid #69a0cb;outline-offset:2px}
 .account-group[open]{background-image:none}
-.account-arrow{width:20px;height:20px;display:grid;place-items:center}.account-arrow-closed{transform:rotate(90deg)}.account-arrow-open{display:none;transform:rotate(-90deg) scaleY(-1)}
-.account-group[open] .account-arrow-closed{display:none}.account-group[open] .account-arrow-open{display:block}
+.account-arrow{width:20px;height:20px;display:grid;place-items:center;transition:rotate 320ms cubic-bezier(.22,1,.36,1)}.account-arrow-closed{transform:rotate(90deg)}.account-arrow-open{display:none}
+.account-group[open]:not([data-closing]) .account-arrow{rotate:-180deg}
 .account-group[open] .account-list{display:flex;flex-direction:column;gap:calc(10 * var(--u))}
+.account-group[open] .account-list{animation:account-arrive 650ms ease-in-out both}
+@keyframes account-arrive{from{opacity:0;translate:0 10px}to{opacity:1;translate:0 0}}
 .account{padding:calc(16 * var(--u)) calc(18 * var(--u));border-radius:calc(4 * var(--u));background:#fff;display:flex;flex-direction:column;gap:calc(6 * var(--u));text-align:left}
 .account p{font-size:calc(13 * var(--u));line-height:calc(20 * var(--u))}.account-name{display:flex;gap:calc(4 * var(--u));font-weight:500;letter-spacing:-.05em}
 .account-transfer{width:calc(100% - var(--u));padding:calc(10 * var(--u)) calc(12 * var(--u));border-radius:calc(4 * var(--u));background:#f8f8f8;display:flex;align-items:center;gap:calc(2 * var(--u))}
@@ -60,10 +62,12 @@ footer{text-align:center;padding:calc(50 * var(--u)) 0}.footer-heart{width:22px;
 .map img{position:absolute;max-width:none;width:calc(1280 * var(--u) / 2);height:calc(720 * var(--u) / 2);left:calc(-476 * var(--u) / 2);top:calc(-140 * var(--u) / 2);object-fit:fill}
 .map-credit{position:absolute;right:calc(6 * var(--u));bottom:calc(4 * var(--u));padding:2px 4px;background:#ffffffd9;border-radius:2px;font-size:10px;color:#444}
 
-/* Gentle, one-time entrance for the text before the calendar. */
-.rise-reveal{opacity:0;translate:0 20px;transition:opacity 900ms ease,translate 900ms cubic-bezier(.22,1,.36,1);transition-delay:var(--reveal-delay,0ms)}
+/* Reference: a soft 40px rise, one second, with short reading/row staggers. */
+.rise-reveal{opacity:0;translate:0 40px;transition:opacity 1s ease,translate 1s cubic-bezier(.22,1,.36,1);transition-delay:var(--reveal-delay,0ms)}
 .rise-reveal.rise-visible{opacity:1;translate:0 0}
-@media(prefers-reduced-motion:reduce){.rise-reveal{opacity:1;translate:none;transition:none}}
+.account-groups.rise-reveal{transition:opacity 1s ease var(--reveal-delay,0ms),translate 1s cubic-bezier(.22,1,.36,1) var(--reveal-delay,0ms),margin-top 420ms cubic-bezier(.22,1,.36,1)}
+.rise-reveal:focus-within{opacity:1;translate:0 0;transition:none}
+@media(prefers-reduced-motion:reduce){.rise-reveal,.account-groups.rise-reveal{opacity:1;translate:none;transition:none}.accounts-section,.account-groups,.account-arrow{transition:none}.account-list{animation:none!important}}
 
 /* Pencil strokes fill the original calendar heart once it enters the viewport. */
 .wedding-day{color:#121212}

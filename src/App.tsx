@@ -14,6 +14,7 @@ import {WeddingVideo} from './WeddingVideo';
 import {loadKakao,type KakaoSdk} from './kakao';
 import {getTmapHref,prepareTmapOpen} from './maps';
 import {accountGroups} from './accounts';
+import {setupInvitationMotion} from './motion';
 const invitation={title:"성진 · 서린의 결혼식에 초대합니다",text:"2027년 1월 30일 오후 3시 30분 · 노블발렌티 대치점",url:"https://linttobom.github.io/wedding/"};
 const nav=[["처음으로","home"],["인사말","greeting"],["예식 일시","date"],["오시는 길","location"],["갤러리","gallery"],["마음 전하는 곳","accounts"],["공유하기","share"]];
 function Names(){return <div className="names">신랑 <strong>이성진</strong><span>·</span>신부 <strong>주서린</strong></div>}
@@ -23,17 +24,10 @@ export default function Wedding(){
  const [menu,setMenu]=useState(false),[photo,setPhoto]=useState<number|null>(null),[toast,setToast]=useState(""),[remaining,setRemaining]=useState<number|null>(null);
  const [sharing,setSharing]=useState(false),[kakao,setKakao]=useState<KakaoSdk|null>(null),[kakaoError,setKakaoError]=useState(false);
  const modal=useRef<HTMLDivElement>(null),touch=useRef<number|null>(null);
+ const invitationRef=useRef<HTMLElement>(null);
  const overlay=menu||photo!==null||sharing;
  useEffect(()=>{
-  if(matchMedia('(prefers-reduced-motion: reduce)').matches||!('IntersectionObserver' in window))return;
-  const groups=[['.hero-names','.hero-title','.hero-details'],['.timer'],['.greeting-copy p','.parents p']];
-  const nodes=groups.flatMap(selectors=>selectors.flatMap(selector=>Array.from(document.querySelectorAll<HTMLElement>(selector))));
-  groups.forEach(selectors=>selectors.flatMap(selector=>Array.from(document.querySelectorAll<HTMLElement>(selector))).forEach((node,i)=>{node.classList.add('rise-reveal');node.style.setProperty('--reveal-delay',`${i*140}ms`)}));
-  const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('rise-visible');observer.unobserve(entry.target)}})},{threshold:.15});
-  const heroNodes=nodes.filter(node=>node.closest('#home'));
-  nodes.filter(node=>!node.closest('#home')).forEach(node=>observer.observe(node));
-  const timer=setTimeout(()=>heroNodes.forEach(node=>observer.observe(node)),3200);
-  return()=>{clearTimeout(timer);observer.disconnect();nodes.forEach(node=>{node.classList.remove('rise-reveal','rise-visible');node.style.removeProperty('--reveal-delay')})};
+  if(invitationRef.current)return setupInvitationMotion(invitationRef.current);
  },[]);
 
  useEffect(()=>{const tick=()=>setRemaining(Math.max(0,Math.floor((new Date("2027-01-30T15:30:00+09:00").getTime()-Date.now())/1000)));tick();const t=setInterval(tick,1000);return()=>clearInterval(t)},[]);
@@ -45,7 +39,7 @@ export default function Wedding(){
  function shareKakao(){if(!kakao)return;try{const link={mobileWebUrl:invitation.url,webUrl:invitation.url};kakao.Share.sendDefault({objectType:"feed",content:{title:invitation.title,description:invitation.text,imageUrl:invitation.url+"images/share.jpg",link},buttons:[{title:"청첩장 보기",link}]});setSharing(false)}catch{setToast("카카오톡 공유를 열 수 없습니다. 링크를 복사해주세요.")}}
  const smsUrl=`sms:${/iPhone|iPad|iPod/i.test(navigator.userAgent)?"&":"?"}body=${encodeURIComponent(invitation.title+"\n"+invitation.text+"\n"+invitation.url)}`;
  const values=remaining===null?["—","—","—","—"]:[Math.floor(remaining/86400),Math.floor(remaining%86400/3600),Math.floor(remaining%3600/60),remaining%60];
- return <><div className="fixed-controls" aria-hidden={overlay?true:undefined} inert={overlay?true:undefined}><Music/><button className="menu-toggle" onClick={()=>setMenu(true)} aria-label="메뉴 열기"><Icon name="imgIconMenu"/></button></div><main className="invitation" aria-hidden={overlay?true:undefined} inert={overlay?true:undefined}>
+ return <><div className="fixed-controls" aria-hidden={overlay?true:undefined} inert={overlay?true:undefined}><Music/><button className="menu-toggle" onClick={()=>setMenu(true)} aria-label="메뉴 열기"><Icon name="imgIconMenu"/></button></div><main ref={invitationRef} className="invitation" aria-hidden={overlay?true:undefined} inert={overlay?true:undefined}>
  <section id="home" className="hero"><Intro/><div className="hero-photo"><img src={hero} alt="성진과 서린의 웨딩 사진" fetchPriority="high"/></div><div className="hero-fade"/><div className="hero-names"><Names/></div><h1 className="hero-title"><img src={A+"optima-wedding.svg"} alt="OUR WEDDING" width="262" height="44"/></h1><p className="hero-details"><time dateTime="2027-01-30T15:30:00+09:00">2027.01.30 3:30PM</time><span>|</span>노블발렌티 대치점</p></section>
  <section className="countdown" aria-label="결혼식까지 남은 시간"><div className="timer">{values.map((v,i)=><div className="timer-cell" key={i}><span className="timer-number">{v}</span><span className="timer-label">{["DAYS","HOURS","MIN","SEC"][i]}</span></div>)}</div></section>
  <section id="greeting" className="greeting"><div className="greeting-copy"><p>서로에게 행복을 주는 사람을 만났습니다.<br/>운명처럼 만나게 된 우리의 인연,<br/>그 인연에 이끌려 이제 영원을 함께 약속하려 합니다.</p><p>저희의 하나 됨을 지켜보아 주시고<br/>격려해 주시면 더없는 기쁨으로 간직하겠습니다.</p></div><div className="greeting-divider"><Icon name="imgVector1"/></div><div className="parents"><p>이용수 · 문근선의 장남 <strong>이성진</strong></p><p>주준호 · 김정순의 장녀 <strong>주서린</strong></p></div><img className="greeting-photo" src={greeting} alt="손을 잡고 함께 서 있는 성진과 서린" loading="lazy"/></section>

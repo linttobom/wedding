@@ -14,7 +14,8 @@
     "test:maps": "node --experimental-strip-types --test scripts/maps.test.mjs",
     "security:check": "npm audit --audit-level=low && node scripts/check-security.mjs",
     "test:media": "node --experimental-strip-types --test scripts/media.test.mjs",
-    "test:security": "node --test scripts/security.test.mjs"
+    "test:security": "node --test scripts/security.test.mjs",
+    "test:motion": "node --experimental-strip-types --test scripts/motion.test.mjs"
   },
   "dependencies": {
     "react": "19.2.6",
