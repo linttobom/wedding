@@ -58,7 +58,20 @@ export default function Wedding(){
  <section id="video" className="video-section" aria-label="성진과 서린의 웨딩 영상"><WeddingVideo/></section>
  <section id="gallery" className="gallery-section"><h2>갤러리</h2><p className="subtitle">사진을 클릭 하면 크게 보실 수 있어요</p><div className="gallery-grid">{photos.map((id,i)=><button key={id.full} aria-label={`${i+1}번째 웨딩 사진 크게 보기`} onClick={()=>setPhoto(i)}><img src={id.thumbnail} alt={`성진과 서린의 웨딩 사진 ${i+1}`} width="480" height="480" loading="lazy" decoding="async" fetchPriority="low"/></button>)}</div></section>
 
- <section id="accounts" className="accounts-section"><h2>마음 전하실 곳</h2><p className="subtitle">참석이 어려우신 분들을 위해 기재했습니다<br/>너그러운 마음으로 양해 부탁드립니다</p><div className="account-groups">{accountGroups.map(({label,accounts})=><details className="account-group" key={label}><summary><span>{label}</span><span className="account-arrow"><Icon name="account-chevron" className="account-arrow-closed"/><Icon name="account-chevron-open" className="account-arrow-open"/></span></summary><div className="account-list">{accounts.map(account=><div className="account" key={account.role}><div><p className="account-name">{account.role} {account.name}</p><p className="account-number">{account.bank}<span>{account.number||"계좌번호 준비 중"}</span></p></div><button disabled={!account.number} aria-label={`${label} ${account.role} ${account.name} 계좌번호 복사`} onClick={()=>copy(account.number,"계좌번호를")}><Icon name="account-copy"/></button></div>)}</div></details>)}</div></section>
+ <section id="accounts" className="accounts-section">
+  <h2>마음 전하실 곳</h2>
+  <p className="subtitle">참석이 어려우신 분들을 위해 기재했습니다<br/>너그러운 마음으로 양해 부탁드립니다</p>
+  <div className="account-groups">{accountGroups.map(({label,accounts})=><details className="account-group" key={label}>
+   <summary><span>{label}</span><span className="account-arrow"><Icon name="account-chevron" className="account-arrow-closed"/><Icon name="account-chevron-open" className="account-arrow-open"/></span></summary>
+   <div className="account-list">{accounts.map(account=><div className="account" key={account.role}>
+    <p className="account-name"><span>{account.role.replace(/^(?:신랑|신부) (?=아버지|어머니)/, "")}</span><span>{account.name}</span></p>
+    <div className="account-transfer">
+     <p className="account-number">{account.bank}<span>{account.number||"계좌번호 준비 중"}</span></p>
+     <button disabled={!account.number} aria-label={`${label} ${account.role} ${account.name} 계좌번호 복사`} onClick={()=>copy(account.number,"계좌번호를")}><Icon name="account-copy"/></button>
+    </div>
+   </div>)}</div>
+  </details>)}</div>
+ </section>
  <section id="attendance" className="attendance-section"><img className="attendance-photo" src={attendanceImage} alt="거울 앞에서 포즈를 취하는 성진과 서린" width="1500" height="2250" loading="lazy"/></section>
  <section id="share" className="share-section"><button className="share-trigger" onClick={openShare} aria-haspopup="dialog"><ShareIcon name="trigger"/><span>공유하기</span></button></section>
  <footer><Icon name="img" className="footer-heart"/><Names/><p>Thank you for celebrating with us</p></footer></main>
