@@ -77,8 +77,7 @@ function revealInvitation(root: HTMLElement, seen: WeakSet<HTMLElement>) {
   ['.gallery-section h2, .gallery-section .subtitle', 100],
   ['.gallery-grid > button', 100, 3],
   ['.accounts-section h2, .accounts-section .subtitle, .account-groups', 100],
-  ['.attendance-photo, .share-trigger', 0],
-  ['footer > *', 100],
+  ['.attendance-photo', 0],
  ];
  const nodes: HTMLElement[] = [];
  const visible = (node: HTMLElement) => {
