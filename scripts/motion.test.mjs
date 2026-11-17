@@ -275,21 +275,22 @@ test('without IntersectionObserver no body content is hidden and account toggles
  });
 });
 
-test('hero date and venue reveal with the names and title after the intro without needing a viewport intersection', () => {
+test('hero names, title, and date reveal in order after the intro without needing a viewport intersection', () => {
  withEnvironment({}, env => {
   const hero = Array.from({ length: 3 }, () => new ElementDouble());
   const body = new ElementDouble();
   const dispose = setupInvitationMotion(new RootDouble([body], [], hero));
   const observer = env.observers[0];
-  hero.forEach(node => {
+  hero.forEach((node, index) => {
    assert.equal(node.classList.contains('rise-visible'), false, 'wait for the opening message');
-   assert.equal(node.style.getPropertyValue('--reveal-delay'), '0ms', 'all hero copy shares the same start time');
+   assert.equal(node.style.getPropertyValue('--reveal-delay'), `${index * 120}ms`, 'each hero line follows the previous line');
    assert.equal(observer.observed.has(node), false);
   });
   assert.equal(env.timers.size, 1);
   [...env.timers.values()].forEach(callback => callback());
-  hero.forEach(node => {
+  hero.forEach((node, index) => {
    assert.equal(node.classList.contains('rise-visible'), true, 'even bottom-aligned details reveal without scrolling');
+   assert.equal(node.style.getPropertyValue('--reveal-delay'), `${index * 120}ms`, 'starting the sequence preserves the stagger');
    assert.equal(observer.observed.has(node), false);
   });
   assert.equal(body.classList.contains('rise-visible'), false, 'body content still waits for scrolling');
