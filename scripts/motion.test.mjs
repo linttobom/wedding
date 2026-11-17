@@ -74,14 +74,17 @@ class DetailsDouble extends ElementDouble {
  }
 }
 class RootDouble extends ElementDouble {
- constructor(nodes = [], details = []) {
+ constructor(nodes = [], details = [], hero = []) {
   super();
   this.nodes = nodes;
   this.details = details;
-  [...nodes, ...details].forEach(node => { node.parentElement = this; });
+  this.hero = hero;
+  hero.forEach(node => { node.inHero = true; });
+  [...nodes, ...details, ...hero].forEach(node => { node.parentElement = this; });
  }
  querySelectorAll(selector) {
-  if (selector === '*') return [...this.nodes, ...this.details];
+  if (selector === '*') return [...this.nodes, ...this.details, ...this.hero];
+  if (selector === '.hero-names, .hero-title, .hero-details') return this.hero;
   if (selector === '.account-group') return this.details;
   if (selector === '.greeting-copy p') return this.nodes;
   return [];
@@ -269,6 +272,44 @@ test('without IntersectionObserver no body content is hidden and account toggles
   details.animations[0].finish();
   assertSettled(details, true);
   dispose();
+ });
+});
+
+test('hero date and venue reveal with the names and title after the intro without needing a viewport intersection', () => {
+ withEnvironment({}, env => {
+  const hero = Array.from({ length: 3 }, () => new ElementDouble());
+  const body = new ElementDouble();
+  const dispose = setupInvitationMotion(new RootDouble([body], [], hero));
+  const observer = env.observers[0];
+  hero.forEach(node => {
+   assert.equal(node.classList.contains('rise-visible'), false, 'wait for the opening message');
+   assert.equal(node.style.getPropertyValue('--reveal-delay'), '0ms', 'all hero copy shares the same start time');
+   assert.equal(observer.observed.has(node), false);
+  });
+  assert.equal(env.timers.size, 1);
+  [...env.timers.values()].forEach(callback => callback());
+  hero.forEach(node => {
+   assert.equal(node.classList.contains('rise-visible'), true, 'even bottom-aligned details reveal without scrolling');
+   assert.equal(observer.observed.has(node), false);
+  });
+  assert.equal(body.classList.contains('rise-visible'), false, 'body content still waits for scrolling');
+  observer.enter(body);
+  assert.equal(body.classList.contains('rise-visible'), true);
+  dispose();
+ });
+});
+
+test('disposing before the opening message ends cancels the pending hero reveal', () => {
+ withEnvironment({}, env => {
+  const hero = Array.from({ length: 3 }, () => new ElementDouble());
+  const dispose = setupInvitationMotion(new RootDouble([], [], hero));
+  dispose();
+  assert.equal(env.timers.size, 0);
+  hero.forEach(node => {
+   assert.equal(node.classList.contains('rise-reveal'), false);
+   assert.equal(node.classList.contains('rise-visible'), false);
+   assert.equal(node.style.getPropertyValue('--reveal-delay'), '');
+  });
  });
 });
 

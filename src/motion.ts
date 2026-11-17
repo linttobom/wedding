@@ -63,7 +63,7 @@ function revealInvitation(root: HTMLElement, seen: WeakSet<HTMLElement>) {
  // Reveal short reading/photo groups independently; gallery delays restart
  // each row rather than making the last of 21 photos wait several seconds.
  const groups: [string, number, number?][] = [
-  ['.hero-names, .hero-title, .hero-details', 120],
+  ['.hero-names, .hero-title, .hero-details', 0],
   ['.timer', 0],
   ['.greeting-copy p', 100],
   ['.greeting-divider', 0],
@@ -99,8 +99,9 @@ function revealInvitation(root: HTMLElement, seen: WeakSet<HTMLElement>) {
    else observer.observe(node);
   });
  });
- // Match the existing opening message; don't reveal its text behind the dim.
- const timer = window.setTimeout(() => hero.forEach(node => observer.observe(node)), 3200);
+ // Keep the hero copy together after the opening message. Its date/venue sits
+ // near the viewport bottom and must not wait for a scroll observer to enter.
+ const timer = window.setTimeout(() => hero.forEach(visible), 3200);
  const focus = (event: Event) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
