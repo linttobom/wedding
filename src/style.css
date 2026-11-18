@@ -59,21 +59,9 @@ footer{text-align:center;padding:calc(50 * var(--u)) 0}.footer-heart{width:22px;
 /* Updated location design: 104 × 36 buttons at the 360px design width. */
 .map-buttons a{height:calc(36 * var(--u));font-size:13px}
 .map{position:relative}
-.map-canvas{position:absolute;inset:0;overflow:hidden;touch-action:pan-y pinch-zoom;user-select:none;-webkit-user-select:none}
-.map-canvas[data-zoomed=true]{touch-action:pinch-zoom;cursor:grab}
-.map-canvas[data-zoomed=true][data-interacting=true]{cursor:grabbing}
-.map .map-image{position:absolute;inset:0;max-width:none;width:100%;height:100%;object-fit:cover;pointer-events:none;transform-origin:center;transition:transform 180ms ease}
-.map-canvas[data-interacting=true] .map-image{transition:none}
-.map-canvas:focus-visible{outline:3px solid #69a0cb;outline-offset:-3px}
-.map-zoom-controls{position:absolute;top:10px;right:10px;display:flex;flex-direction:column;border:1px solid #ddd;border-radius:5px;background:white;box-shadow:0 2px 6px #00000015;overflow:hidden}
-.map-zoom-controls button{width:44px;height:44px;display:grid;place-items:center;font-size:25px;line-height:1;color:#333;background:white}
-.map-zoom-controls button+button{border-top:1px solid #e5e5e5}
-.map-zoom-controls button:disabled{color:#bbb;cursor:default}
-.map-reset{position:absolute;left:10px;bottom:10px;min-height:44px;padding:0 12px;border:1px solid #ddd;border-radius:5px;background:white;box-shadow:0 2px 6px #00000015;font-size:12px;color:#444}
-.map-zoom-controls button:focus-visible,.map-reset:focus-visible,.map-credit:focus-visible{outline:2px solid #69a0cb;outline-offset:-3px}
-.map-zoom-status{position:absolute;right:12px;top:104px;padding:3px;background:#fffffff0;border-radius:3px;font-size:11px;pointer-events:none;color:#555}
+.map .map-image{position:absolute;inset:0;max-width:none;width:100%;height:100%;object-fit:cover}
+.map:focus-visible{outline:3px solid #69a0cb;outline-offset:-3px}
 .map-credit{position:absolute;right:6px;bottom:4px;padding:4px 6px;background:#fffffff0;border-radius:2px;font-size:10px;color:#444}
-@media(prefers-reduced-motion:reduce){.map .map-image{transition:none}}
 
 /* Reference: a soft 40px rise, one second, with short reading/row staggers. */
 .rise-reveal{opacity:0;translate:0 40px;transition:opacity 1s ease,translate 1s cubic-bezier(.22,1,.36,1);transition-delay:var(--reveal-delay,0ms)}

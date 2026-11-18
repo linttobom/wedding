@@ -4,18 +4,20 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host 127.0.0.1",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview --host 127.0.0.1",
+    "dev": "node scripts/build.mjs --serve",
+    "build": "tsc --noEmit && node scripts/build.mjs",
+    "preview": "node scripts/preview.mjs",
     "images:optimize": "node scripts/optimize-images.mjs",
-    "predev": "npm run images:optimize && npm run fonts:optimize",
-    "prebuild": "npm run images:optimize && npm run fonts:optimize",
+    "predev": "npm run images:optimize && npm run assets:generate && npm run fonts:optimize",
+    "prebuild": "npm run images:optimize && npm run assets:generate && npm run fonts:optimize",
     "fonts:optimize": "node scripts/optimize-fonts.mjs",
     "test:maps": "node --experimental-strip-types --test scripts/maps.test.mjs",
     "security:check": "npm audit --audit-level=low && node scripts/check-security.mjs",
     "test:media": "node --experimental-strip-types --test scripts/media.test.mjs",
     "test:security": "node --test scripts/security.test.mjs",
-    "test:motion": "node --experimental-strip-types --test scripts/motion.test.mjs"
+    "test:motion": "node --experimental-strip-types --test scripts/motion.test.mjs",
+    "assets:generate": "node scripts/generate-assets.mjs",
+    "test:build": "node --test scripts/build-artifacts.test.mjs"
   },
   "dependencies": {
     "react": "19.2.6",
@@ -25,11 +27,10 @@
     "@types/node": "^22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
-    "@vitejs/plugin-react": "^6.1.2",
     "fontkit": "^2.0.4",
     "sharp": "^0.35.5",
     "subset-font": "^2.9.0",
     "typescript": "5.9.3",
-    "vite": "^8.3.4"
+    "esbuild": "0.28.2"
   }
 }

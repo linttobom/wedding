@@ -1,8 +1,7 @@
 "use client";
 import { useEffect, useRef, useState } from "react";
 const A=import.meta.env.BASE_URL+"icons/";
-const imageModules=import.meta.glob('../images/optimized/gallery/*.webp',{eager:true,query:'?url',import:'default'}) as Record<string,string>;
-const thumbnailModules=import.meta.glob('../images/optimized/thumbnails/*.webp',{eager:true,query:'?url',import:'default'}) as Record<string,string>;
+import {imageModules,thumbnailModules} from './generated/assets';
 const photos=Object.entries(imageModules).sort(([a],[b])=>a.localeCompare(b,undefined,{numeric:true})).map(([file,url])=>({full:url,thumbnail:thumbnailModules[file.replace('/gallery/','/thumbnails/')]}));
 import hero from '../images/optimized/hero.webp';
 import greeting from '../images/optimized/greeting.webp';

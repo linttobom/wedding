@@ -2,7 +2,7 @@ import {useEffect,useRef,useState} from 'react';
 import type {CSSProperties} from 'react';
 import {createBackgroundMusic,STOP_BACKGROUND_MUSIC} from './backgroundMusic';
 import {createMusicVolume} from './musicVolume';
-const musicFiles=import.meta.glob(['../audio/*.{mp3,m4a,ogg,wav,MP3,M4A,OGG,WAV}','!../audio/placeholder.wav'],{eager:true,query:'?url',import:'default'}) as Record<string,string>;
+import {musicFiles} from './generated/assets';
 const musicUrl=Object.entries(musicFiles).sort(([a],[b])=>a.localeCompare(b)).find(([file])=>!file.endsWith('placeholder.wav'))?.[1];
 export function Intro(){
  const [finished,setFinished]=useState(false);
