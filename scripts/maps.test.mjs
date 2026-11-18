@@ -1,6 +1,31 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {getTmapHref,tmapPlatform,prepareTmapOpen} from '../src/maps.ts';
+import {initialMapView,panMap,zoomMap} from '../src/mapViewport.ts';
+
+test('map zoom is bounded and returning to the full image recenters it',()=>{
+ assert.deepEqual(zoomMap(initialMapView,.5),initialMapView);
+ const enlarged=zoomMap(initialMapView,10);
+ assert.equal(enlarged.scale,3);
+ const moved=panMap(enlarged,.8,-.7);
+ assert.deepEqual(zoomMap(moved,1),initialMapView);
+});
+
+test('map dragging cannot reveal blank space beyond any edge',()=>{
+ const enlarged=zoomMap(initialMapView,2);
+ assert.deepEqual(panMap(enlarged,5,-5),{scale:2,x:.5,y:-.5});
+ assert.deepEqual(panMap(enlarged,-5,5),{scale:2,x:-.5,y:.5});
+ assert.deepEqual(panMap(initialMapView,.3,.4),initialMapView);
+});
+
+test('zooming a dragged map preserves the point at the viewport center',()=>{
+ const before={scale:1.5,x:.1,y:-.1};
+ const after=zoomMap(before,2);
+ for(const axis of ['x','y']){
+  const originalPoint=-before[axis]/before.scale;
+  assert.ok(Math.abs(originalPoint*after.scale+after[axis])<1e-12);
+ }
+});
 
 test('Android opens the exact venue with a package-scoped intent and store fallback',()=>{
  const link=getTmapHref('Mozilla/5.0 (Linux; Android 15) Chrome/130.0',0);

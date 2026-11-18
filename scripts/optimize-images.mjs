@@ -6,7 +6,7 @@ await rm(output, {recursive: true, force: true});
 await mkdir(`${output}/gallery`, {recursive: true});
 await mkdir(`${output}/thumbnails`, {recursive: true});
 
-const totals = {sections: 0, gallery: 0, thumbnails: 0, share: 0};
+const totals = {sections: 0, gallery: 0, thumbnails: 0, share: 0, map: 0};
 
 async function convert(input, destination, resize, category, quality = 85) {
   const {size} = await sharp(input)
@@ -22,6 +22,13 @@ async function convert(input, destination, resize, category, quality = 85) {
 for (const name of ['hero', 'greeting', 'attendance']) {
   await convert(`images/${name}.png`, `${output}/${name}.webp`, {width: 1320}, 'sections');
 }
+
+// Keep map labels, marker pixels, original dimensions and color profile intact.
+const map = await sharp('images/map.png')
+  .keepIccProfile()
+  .webp({lossless: true, quality: 100, effort: 6})
+  .toFile(`${output}/map-naver.webp`);
+totals.map = map.size;
 
 const files = (await readdir('images/gallery'))
   .filter(file => /\.(png|jpe?g|webp|avif)$/i.test(file))
@@ -39,4 +46,4 @@ const share = await sharp('images/greeting.png')
   .jpeg({quality: 85, mozjpeg: true})
   .toFile(`${output}/share.jpg`);
 totals.share = share.size;
-console.log(`Optimized 3 section photos and ${files.length} gallery photos with thumbnails. Bytes: ${JSON.stringify(totals)}`);
+console.log(`Optimized 3 section photos, ${files.length} gallery photos with thumbnails, and a lossless map. Bytes: ${JSON.stringify(totals)}`);
